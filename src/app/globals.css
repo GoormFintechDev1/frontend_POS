@@ -2,7 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 로컬 폰트 적용 부분 */
 :root {
+  --font-goorm-sans-bold: 'goorm-sans-bold', sans-serif;
+  --font-goorm-sans-medium: 'goorm-sans-medium', sans-serif;
+  --font-goorm-sans-regular: 'goorm-sans-regular', sans-serif;
   --background: #ffffff;
   --foreground: #171717;
 }

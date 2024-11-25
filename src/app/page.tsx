@@ -1,101 +1,207 @@
-import Image from "next/image";
+"use client";
+import { useCreateOrder } from "@/hooks/useOrderQuery";
+import { useCreateProduct, useProduct } from "@/hooks/useProductQuery";
+import { CartItem, Product } from "@/interface/product";
+import Link from "next/link";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
-export default function Home() {
+
+export default function Pos() {
+
+  const [cart, setCart] = useState<CartItem[]>([]);
+
+  const [total, setTotal] = useState(0);
+  const [checkoutMessage, setCheckoutMessage] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { register, handleSubmit} = useForm<Product>({ mode: "onChange" });
+
+  const {data: product} = useProduct();
+
+
+  const addToCart = (product: Product) => {
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((item) => item.productId === product.productId);
+      
+      if (existingItem) {
+        return prevCart.map((item) =>
+          item.productId === product.productId
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
+        );
+      } else {
+        return [...prevCart, { productId: product.productId,
+          name: product.productName,
+          price: product.productPrice,
+          quantity: 1 }];
+      }
+    });
+    setTotal((prevTotal) => prevTotal + product.productPrice);
+  };
+
+  const removeFromCart = (id: number) => {
+    setCart((prevCart) =>
+      prevCart
+        .map((item) =>
+          item.productId === id
+            ? { ...item, quantity: item.quantity - 1 }
+            : item
+        )
+        .filter((item) => item.quantity > 0)
+    );
+    const removedProduct = cart.find((item) => item.productId === id);
+    if (removedProduct) {
+      setTotal((prevTotal) => prevTotal - removedProduct?.price as number);
+    }
+  };
+  const orderMuatation = useCreateOrder();
+  
+  const handleCheckout = () => {
+    if (cart.length > 0) {
+      // 기존 저장된 결제 내역 가져오기
+      const previousTransactions = JSON.parse(localStorage.getItem("transactions") || "[]");
+
+      // 새로운 결제 내역 추가
+      const newTransaction = [...previousTransactions, { cart, total, date:new Date().toISOString()}];
+      localStorage.setItem("transactions", JSON.stringify(newTransaction));
+      console.log(cart);
+      const cartData = cart.map((e)=>({productId: e.productId, quantity:e.quantity}));
+      orderMuatation.mutate({orderItems:cartData});
+
+      setCart([]); 
+      setTotal(0); 
+      setCheckoutMessage("결제가 완료되었습니다."); 
+
+      // 2초 후 메시지 숨기기
+      setTimeout(() => {
+        setCheckoutMessage(null);
+      }, 2000);
+    }
+  };
+
+  const closeModal = () => setIsModalOpen(false);
+
+  const productMuatation = useCreateProduct();
+  const onSubmit = (data: Product) => {
+    productMuatation.mutate(data);
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className=" flex flex-col overflow-y-auto p-10 justify-center max-w-4xl mx-auto">
+      <div className="flex justify-between items-center mb-5">
+        <h1 className="text-2xl font-bold">POS 시스템</h1>
+        <Link
+          href ={"/poslist"} className="p-2 rounded-md bg-slate-200">
+            결제내역
+        </Link>
+      </div>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      <div className="flex mb-5 justify-center">
+        <div className="grid grid-cols-2 gap-5 bg-gray-50 p-4 w-full">
+          {product?.map((product: Product, i:number) => (
+            <button
+              key={i}
+              onClick={() => addToCart(product)}
+              className=" p-5 bg-white rounded-lg shadow text-center "
+            >
+              <h2 className="text-lg font-bold">{product?.productName}</h2>
+              <p className="text-gray-500">{product?.productPrice.toLocaleString()}원</p>
+            </button>
+          ))}
+          <button onClick={()=>{setIsModalOpen(true)}} className=" p-5 bg-white rounded-lg shadow text-center ">+</button>
+        </div> 
+      </div>
+
+      <div>
+        {/* Modal */}
+        {isModalOpen && (
+          <div
+            className="fixed inset-0 flex items-end justify-center bg-black bg-opacity-30 z-10"
+            onClick={closeModal}
           >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            <div
+              className="bg-white rounded-t-3xl w-full max-w-lg p-10 text-center relative slide-up"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={closeModal}
+                className="text-gray-700 font-bold text-2xl absolute top-2 right-4"
+              >
+                &times;
+              </button>
+              <form className="flex flex-col space-y-4" onSubmit={handleSubmit(onSubmit)}>
+                <div className="flex flex-col">
+                <label className="text-xl font-medium text-gray-700 text-start ">상품명</label>
+                <input
+                  placeholder="상품명"
+                  {...register("productName")}
+                  className="mt-1 p-3 border border-gray-300 rounded"
+                />
+              </div>
+              
+              <div className="flex flex-col">
+                <label className="text-xl font-medium text-gray-700 text-start">가격</label>
+                <input
+                  placeholder="가격"
+                  {...register("productPrice")}
+                  className="mt-1 p-3 border border-gray-300 rounded"
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-emerald-500 text-xl font-normal rounded-lg h-16"
+              >
+                상품등록
+              </button>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
+
+      
+      <div className="bg-gray-100 p-4 ">
+        <h2 className="text-lg font-bold mb-2">주문내역</h2>
+          <ul className="space-y-2">
+            {cart?.map((item) => (
+              <li
+                key={item.productId}
+                className="flex justify-between items-center bg-white p-3 rounded-lg shadow"
+              >
+                <div>
+                  <span className="font-bold">{item.name}</span>
+                  <span className="ml-2 text-gray-500 text-xs">
+                    {item?.price?.toLocaleString()}원
+                  </span>
+                  <span className="ml-2 text-gray-500 text-xs">x {item.quantity}</span>
+                </div>
+                <button
+                  onClick={() => removeFromCart(item.productId)}
+                  className="text-red-500 font-bold"
+                >
+                  삭제
+                </button>
+              </li>
+            ))}
+          </ul>
+        
+        <div className="mt-4 flex justify-between items-center">
+          <h3 className="text-xl font-bold">총합: {total.toLocaleString()}원</h3>
+          <button
+            onClick={handleCheckout}
+            className="p-3 bg-emerald-500 text-white rounded-md shadow"
           >
-            Read our docs
-          </a>
+            결제하기
+          </button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
+      {checkoutMessage && (
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2">
+          {checkoutMessage}
+        </div>
+      )}
     </div>
   );
 }
