@@ -1,4 +1,4 @@
-import { Product } from "@/interface/product";
+import { ProductRegi } from "@/interface/product";
 
 const enviroment = process.env.NODE_ENV;
 
@@ -18,7 +18,7 @@ export const getProduct = async () => {
     return data;
 }
 
-export const createProduct = async (data:Product) => {
+export const createProduct = async (data:ProductRegi) => {
     const response = await fetch(`${url}/create`, {
         method: 'POST',
         credentials: 'include',

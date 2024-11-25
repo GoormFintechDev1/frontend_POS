@@ -1,5 +1,10 @@
 export interface Product{
-    productId?: number;
+    productId: number;
+    productName: string;
+    productPrice: number;
+}
+
+export interface ProductRegi{
     productName: string;
     productPrice: number;
 }
@@ -10,3 +15,8 @@ export interface CartItem {
     price: number;
     quantity: number;
   };
+
+export interface CartData {
+    productId: number,
+    quantity: number,
+}

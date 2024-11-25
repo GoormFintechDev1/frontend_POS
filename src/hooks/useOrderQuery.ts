@@ -1,4 +1,4 @@
-import { CartItem } from "@/interface/product";
+import { CartData } from "@/interface/product";
 import { createOrder, getOrder } from "@/lib/orderApi";
 import { useMutation, useQuery } from "@tanstack/react-query"
 
@@ -10,12 +10,12 @@ export const useOrder = () => {
   };
 
   interface Orderdata {
-    orderItems: CartItem[];
+    orderItems: CartData[];
 }
 
 export const useCreateOrder = () => {
     return useMutation({
       mutationFn: (data: Orderdata) => createOrder(data),
     })
-  };
+  }; 
 

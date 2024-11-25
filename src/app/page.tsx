@@ -21,7 +21,8 @@ export default function Pos() {
 
 
   const addToCart = (product: Product) => {
-    setCart((prevCart) => {
+
+    setCart((prevCart: CartItem[]) => {
       const existingItem = prevCart.find((item) => item.productId === product.productId);
       
       if (existingItem) {

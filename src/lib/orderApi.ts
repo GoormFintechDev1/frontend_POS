@@ -1,4 +1,4 @@
-import { CartItem } from "@/interface/product";
+import { CartData } from "@/interface/product";
 
 const enviroment = process.env.NODE_ENV;
 
@@ -20,7 +20,7 @@ export const getOrder = async () => {
 }
 
 interface Orderdata {
-    orderItems: CartItem[];
+    orderItems: CartData[];
 }
 
 export const createOrder = async (data: Orderdata) => {
