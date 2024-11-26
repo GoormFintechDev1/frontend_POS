@@ -89,7 +89,7 @@ export default function Pos() {
   }
 
   return (
-    <div className=" flex flex-col overflow-y-auto p-10 justify-center max-w-4xl mx-auto">
+    <div className="container flex flex-col overflow-y-auto p-10 justify-center mx-auto">
       <div className="flex justify-between items-center mb-5">
         <h1 className="text-2xl font-bold">POS 시스템</h1>
         <Link

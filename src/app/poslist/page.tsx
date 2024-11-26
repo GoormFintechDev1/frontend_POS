@@ -23,7 +23,7 @@ export default function PosList() {
   }, []);
 
   return (
-    <div className="min-h-screen p-4 max-w-4xl mx-auto">
+    <div className="min-h-screen p-4 mx-auto container">
       <div className="flex mb-5">
         <Link href={"/"}>
           <Image alt="back" src={'/icons/arrow.png'} width={25} height={25} className="mr-2" />

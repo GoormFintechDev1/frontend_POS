@@ -29,3 +29,13 @@ body {
     text-wrap: balance;
   }
 }
+
+.container {
+  margin-left: auto; 
+  margin-right: auto; 
+  max-width: 800px;
+  /* height: calc(100vh + 83px); */
+  height: 100vh; 
+  padding: 25px; 
+  padding-bottom: 83px; /* navbar 만큼 padding-bottom 값 추가 */
+}
