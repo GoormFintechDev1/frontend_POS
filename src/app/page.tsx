@@ -89,13 +89,21 @@ export default function Pos() {
   }
 
   return (
-    <div className="container flex flex-col overflow-y-auto p-10 justify-center mx-auto">
+    <div className="container h-screen flex flex-col overflow-y-auto p-10 justify-center mx-auto">
+      <div className="flex-grow">
       <div className="flex justify-between items-center mb-5">
         <h1 className="text-2xl font-bold">POS 시스템</h1>
-        <Link
-          href ={"/poslist"} className="p-2 rounded-md bg-slate-200">
-            결제내역
-        </Link>
+        <div className="space-x-4">
+          <Link
+            href ={"/poslist"} className="p-2 rounded-md bg-slate-200">
+              결제내역
+          </Link>
+          <Link
+            href ={"/shop"} className="p-2 rounded-md bg-blue-400 text-white">
+              발주하기
+          </Link>
+        </div>
+        
       </div>
 
       <div className="flex mb-5 justify-center">
@@ -112,6 +120,7 @@ export default function Pos() {
           ))}
           <button onClick={()=>{setIsModalOpen(true)}} className=" p-5 bg-white rounded-lg shadow text-center ">+</button>
         </div> 
+      </div>
       </div>
 
       <div>
