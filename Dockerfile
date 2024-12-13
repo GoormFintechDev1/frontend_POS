@@ -15,7 +15,7 @@ COPY . .
 
 # Step 6: Set environment variables for Next.js
 # Replace "http://example.com" with your actual API endpoint
-ENV NEXT_PUBLIC_API_URL=http://example.com
+ENV NEXT_PUBLIC_DOMAIN=pos:8083
 
 # Step 7: Build the Next.js application
 RUN npm run build
