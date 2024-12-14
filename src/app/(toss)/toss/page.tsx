@@ -5,7 +5,11 @@ import { ANONYMOUS, loadTossPayments, TossPaymentsPayment } from "@tosspayments/
 import { useEffect, useMemo, useState, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 
-const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT as string; 
+const enviroment = process.env.NODE_ENV;
+const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT as string;
+
+let url = enviroment === "production" ? `http://${process.env.NEXT_PUBLIC_POS_URL}` : `http://localhost:8083`;
+
 
 // 성공 버전 2
 export default function Toss() {
@@ -60,7 +64,7 @@ const isRequestInProgress = useRef(false);
     isRequestInProgress.current = true; // 요청 시작
     try {
       // 결제 데이터를 서버에 저장
-      const saveResponse = await fetch("http://localhost:8083/api/payments/save", {
+      const saveResponse = await fetch(`${url}/api/payments/save`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

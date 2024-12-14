@@ -2,10 +2,7 @@ import { ProductRegi } from "@/interface/product";
 
 const enviroment = process.env.NODE_ENV;
 
-let url = "http://localhost:8083/api/products";
-if (enviroment === "production") {
-  url = process.env.NEXT_PUBLIC_DOMAIN ? `http://${process.env.NEXT_PUBLIC_DOMAIN}/api` : `http://localhost:8083/api/products`;
-}
+let url = enviroment === "production" ? `http://${process.env.NEXT_PUBLIC_POS_URL}` : `http://localhost:8083`;
 
 export const getProduct = async () => {
     const response = await fetch(`${url}/all`, {
@@ -19,7 +16,7 @@ export const getProduct = async () => {
 }
 
 export const createProduct = async (data:ProductRegi) => {
-    const response = await fetch(`${url}/create`, {
+    const response = await fetch(`${url}/api/products/create`, {
         method: 'POST',
         credentials: 'include',
         headers: {

@@ -2,10 +2,7 @@ import { Item } from "@/interface/shop";
 
 const enviroment = process.env.NODE_ENV;
 
-let url = "http://localhost:8083/api/items";
-if (enviroment === "production") {
-  url = process.env.NEXT_PUBLIC_DOMAIN ? `http://${process.env.NEXT_PUBLIC_DOMAIN}/api` : `http://localhost:8083/api/items`;
-}
+let url = enviroment === "production" ? `http://${process.env.NEXT_PUBLIC_POS_URL}` : `http://localhost:8083`;
 
 export const getItem = async () => {
     const response = await fetch(`${url}/all`, {
@@ -19,7 +16,7 @@ export const getItem = async () => {
 }
 
 export const createItem = async (data:Item) => {
-    const response = await fetch(`${url}/create`, {
+    const response = await fetch(`${url}/api/items/create`, {
         method: 'POST',
         credentials: 'include',
         headers: {
