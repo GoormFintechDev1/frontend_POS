@@ -8,7 +8,7 @@ import { useSearchParams } from "next/navigation";
 const enviroment = process.env.NODE_ENV;
 const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT as string;
 
-let url = enviroment === "production" ? `http://${process.env.NEXT_PUBLIC_POS_URL}` : `http://localhost:8083`;
+const url = enviroment === "production" ? `http://${process.env.NEXT_PUBLIC_POS_URL}` : `http://localhost:8083`;
 
 
 // 성공 버전 2

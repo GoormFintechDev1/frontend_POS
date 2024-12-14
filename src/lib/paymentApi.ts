@@ -3,7 +3,7 @@ import { Payment } from "@/interface/payment";
 
 const enviroment = process.env.NODE_ENV;
 
-let url = enviroment === "production" ? `http://${process.env.NEXT_PUBLIC_POS_URL}` : `http://localhost:8083`;
+const url = enviroment === "production" ? `http://${process.env.NEXT_PUBLIC_POS_URL}` : `http://localhost:8083`;
 
 
 export const setPayment = async(data:Payment) => {
