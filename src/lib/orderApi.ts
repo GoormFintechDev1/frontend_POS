@@ -2,7 +2,7 @@ import { CartData } from "@/interface/product";
 
 const enviroment = process.env.NODE_ENV;
 
-const url = enviroment === "production" ? `http://${process.env.NEXT_PUBLIC_POS_URL}` : `http://localhost:8083`;
+const url = enviroment === "production" ? `${process.env.NEXT_PUBLIC_POS_URL}/api/orders` : `http://localhost:8083/api/orders`;
 
 export const getOrder = async () => {
     const response = await fetch(`${url}/all`, {
@@ -20,7 +20,7 @@ interface Orderdata {
 }
 
 export const createOrder = async (data: Orderdata) => {
-    const response = await fetch(`${url}/api/orders/create`, {
+    const response = await fetch(`${url}/create`, {
         method: 'POST',
         credentials: 'include',
         headers: {

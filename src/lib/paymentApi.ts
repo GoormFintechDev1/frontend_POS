@@ -3,11 +3,11 @@ import { Payment } from "@/interface/payment";
 
 const enviroment = process.env.NODE_ENV;
 
-const url = enviroment === "production" ? `http://${process.env.NEXT_PUBLIC_POS_URL}` : `http://localhost:8083`;
+const url = enviroment === "production" ? `${process.env.NEXT_PUBLIC_POS_URL}/api/payments` : `http://localhost:8083/api/payments`;
 
 
 export const setPayment = async(data:Payment) => {
-    const response = await fetch(`${url}/api/payments/confirm`,{
+    const response = await fetch(`${url}/confirm`,{
       method:"POST",
       credentials: "include",
       headers: {

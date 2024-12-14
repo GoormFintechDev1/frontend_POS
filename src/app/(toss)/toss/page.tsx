@@ -8,7 +8,7 @@ import { useSearchParams } from "next/navigation";
 const enviroment = process.env.NODE_ENV;
 const clientKey = process.env.NEXT_PUBLIC_TOSS_CLIENT as string;
 
-const url = enviroment === "production" ? `http://${process.env.NEXT_PUBLIC_POS_URL}` : `http://localhost:8083`;
+const url = enviroment === "production" ? `${process.env.NEXT_PUBLIC_POS_URL}/api/payments` : `http://localhost:8083/api/payments`;
 
 
 // 성공 버전 2
@@ -64,7 +64,7 @@ const isRequestInProgress = useRef(false);
     isRequestInProgress.current = true; // 요청 시작
     try {
       // 결제 데이터를 서버에 저장
-      const saveResponse = await fetch(`${url}/api/payments/save`, {
+      const saveResponse = await fetch(`${url}/save`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
